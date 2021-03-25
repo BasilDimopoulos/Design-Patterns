@@ -6,7 +6,7 @@
 
 enum class Color
 {
-    re,
+    red,
     green,
     blue
 };
