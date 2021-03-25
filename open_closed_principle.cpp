@@ -25,6 +25,7 @@ struct Product
     Size size;
 };
 
+//The open closed principle state that your functions should be open to extension by inheritance but closed for modification
 struct ProductFilter
 {
     //takes a vector of products and a color and returns a vector of products matching that color
@@ -41,6 +42,34 @@ struct ProductFilter
         }
     }
 };
+//Templates are great for the open-closed principle, because they allow a function or class to work on many different data types without being rewritten for each one.
+template <typename T>
+struct Specification
+{
+    virtual bool is_satisfied(T *item) = 0;
+};
+
+template <typename T>
+struct Filter
+{
+    virtual vector<T *> filter(vector<T *> items, Specification<T> &spec) = 0;
+};
+
+struct BetterFilter : Filter<Product>
+{
+    vector<Product *> filter(vector<Product *> items, Specification<Product> &spec) override
+    {
+        vector<Product *> result;
+        for (auto &item : items)
+        {
+            if (spec.is_satisfied(item))
+            {
+                result.push_back(item);
+                return result;
+            }
+        }
+    }
+};
 
 int main()
 {
@@ -51,6 +80,11 @@ int main()
     vector<Product *> items{&apple, &tree, &house};
     ProductFilter pf;
     auto green_things = pf.by_color(items, Color::green);
+
+    for (auto &item : green_things)
+    {
+        cout << item->name << " is green\n";
+    }
 
     return 0;
 }
