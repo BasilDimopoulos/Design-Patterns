@@ -1,11 +1,24 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include<sstream>  
 
 using namespace std;
 
+string intToString(int number){
+        stringstream ss;  
+        ss << number;  
+        string countNumber;
+        ss >> countNumber;
+        cout << countNumber << endl;
+        return countNumber;
+}
+
 int main(){
-    getchar();
+    Journal journal{"Dear Diary"};
+    journal.addEntry("I ate a bug");
+    journal.addEntry("I cried today");
+    
     return 0;
 }
 
@@ -18,9 +31,18 @@ struct Journal
     string title;
     vector<string> entries;
 
-    Journal(const string title): title(title)){}
+    Journal(const string title): title(title){}
 
     void addEntry(const string entry){
-        
+        int count = 1;
+        entries.push_back(intToString(count) + ": " + entry);
+        count++;
     }
+
+    // void save(string filename){
+    //     ofstream ofs(filename);
+    //     for(auto e: entries)
+    //     ofs << e << endl;
+
+    // }
 };
