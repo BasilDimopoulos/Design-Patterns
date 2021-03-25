@@ -26,6 +26,8 @@ struct Product
 };
 
 //The open closed principle state that your functions should be open to extension by inheritance but closed for modification
+//The problem with the below structure is that if you were receive a request to filter by different catergories or even combine
+//different filters, you would have to reuse much of the code
 struct ProductFilter
 {
     //takes a vector of products and a color and returns a vector of products matching that color
@@ -42,7 +44,8 @@ struct ProductFilter
         }
     }
 };
-//Templates are great for the open-closed principle, because they allow a function or class to work on many different data types without being rewritten for each one.
+//Templates are great for the open-closed principle, because they allow a function or class to work
+//on many different data types without being rewritten for each one.
 template <typename T>
 struct Specification
 {
@@ -71,6 +74,44 @@ struct BetterFilter : Filter<Product>
     }
 };
 
+struct ColorSpecification : Specification<Product>
+{
+    Color color;
+    ColorSpecification(Color color) : color(color)
+    {
+    }
+
+    bool is_satisfied(Product *item) override
+    {
+        return item->color == color;
+    }
+};
+
+struct SizeSpecification : Specification<Product>
+{
+    Size size;
+    SizeSpecification(Size size) : size(size)
+    {
+    }
+
+    bool is_satisfied(Product *item) override
+    {
+        return item->size == size;
+    }
+};
+
+template <typename T>
+struct AndSpecification : Specification<T>
+{
+    Specification<T> &first;
+    Specification<T> &second;
+    AndSpecification(Specification<T> &first, Specification<T> &second) : first(first), second(second) {}
+    bool is_satisfied(T *item) override
+    {
+        return first.is_satisfied(item) && second.is_satisfied(item);
+    }
+};
+
 int main()
 {
     Product apple{"Apple", Color::green, Size::small};
@@ -78,12 +119,18 @@ int main()
     Product house{"House", Color::blue, Size::large};
 
     vector<Product *> items{&apple, &tree, &house};
-    ProductFilter pf;
-    auto green_things = pf.by_color(items, Color::green);
-
-    for (auto &item : green_things)
+    BetterFilter bf;
+    ColorSpecification green(Color::green);
+    SizeSpecification large(Size::large);
+    AndSpecification<Product> green_and_large(green, large);
+    for (auto &item : bf.filter(items, green))
     {
-        cout << item->name << " is green\n";
+        cout << item->name << " item is green" << endl;
+    }
+
+    for (auto &item : bf.filter(items, green_and_large))
+    {
+        cout << item->name << " item is green and large" << endl;
     }
 
     return 0;
