@@ -25,7 +25,7 @@ struct Product
     Size size;
 };
 
-//The open closed principle state that your functions should be open to extension by inheritance but closed for modification
+//The open closed principle states that your functions should be open to extension by inheritance but closed for modification
 //The problem with the below structure is that if you were receive a request to filter by different catergories or even combine
 //different filters, you would have to reuse much of the code
 struct ProductFilter
