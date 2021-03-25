@@ -1,26 +1,5 @@
 #include <iostream>
-#include <vector>
-#include <string>
-#include<sstream>  
-
-using namespace std;
-
-string intToString(int number){
-        stringstream ss;  
-        ss << number;  
-        string countNumber;
-        ss >> countNumber;
-        cout << countNumber << endl;
-        return countNumber;
-}
-
-int main(){
-    Journal journal{"Dear Diary"};
-    journal.addEntry("I ate a bug");
-    journal.addEntry("I cried today");
-    
-    return 0;
-}
+#include "helper_functions.hpp"
 
 // Single Responsibiltiy Princible is a class that has a single reason to change
 // A class should have a primary responsiblity and should not take up other responsibilities
@@ -31,18 +10,38 @@ struct Journal
     string title;
     vector<string> entries;
 
-    Journal(const string title): title(title){}
+    Journal(const string title) : title(title) {}
 
-    void addEntry(const string entry){
+    void addEntry(const string entry)
+    {
         int count = 1;
         entries.push_back(intToString(count) + ": " + entry);
         count++;
     }
-
-    // void save(string filename){
-    //     ofstream ofs(filename);
-    //     for(auto e: entries)
-    //     ofs << e << endl;
-
-    // }
 };
+
+//Lets say we wanted to have the ability to save the journal in a notebook. We could add some funcationality to the JOurnal class but it would be much better to
+//SEPERATE the concern into another class/structure
+
+struct Writer
+{
+    void save(const Journal j, const string &filename)
+    {
+        ofstream ofs(filename);
+        for (auto e : j.entries)
+        {
+            ofs << e << endl;
+        }
+    }
+};
+
+int main()
+{
+    Journal journal{"Dear Diary"};
+    journal.addEntry("I set by a shallow creek lake");
+    journal.addEntry("And patiently wait for the stars");
+    Writer writer;
+    writer.save(journal, "diary.txt");
+
+    return 0;
+}
