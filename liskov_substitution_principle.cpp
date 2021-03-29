@@ -16,7 +16,7 @@ public:
         return width;
     }
 
-    void setWidth(int width)
+    virtual void setWidth(int width)
     {
         Rectangle::width = width;
     }
@@ -26,7 +26,7 @@ public:
         return height;
     }
 
-    void setHeight(int height)
+    virtual void setHeight(int height)
     {
         Rectangle::height = height;
     }
@@ -46,8 +46,34 @@ void process(Rectangle &r)
     cout << "Expected area = " << (w * 10) << ", got " << r.area() << endl;
 }
 
+//However lets say down the line you decide to make a square that inherits from rectangle
+struct Square : Rectangle
+{
+    //you make it so that Square only needs 1 input to generate two equal sizes
+    Square(int size) : Rectangle(size, size) {}
+
+    //you then override the setters to make them equal sides, which looks like a good idea...
+    //But this VIOLATES the Liskove subsitution principle, because you can no longer substitute square into the process function
+    //Doing so will no produce accurate results
+    void setWidth(int width) override
+    {
+        this->width = this->height = width;
+    }
+
+    void setHeight(int height) override
+    {
+        this->height = this->width = height;
+    }
+};
+
 int main()
 {
-
+    cout << "A rectangle with side 3 and 10 would have an expected area of 30" << endl;
+    Rectangle r(3, 4); //process changes height to 10
+    process(r);
+    cout << "A square with a width of 5 and then a changed height of 10 through the process function, would have an expected area of 50" << endl;
+    Square sq(5);
+    process(sq);
+    cout << "This is incorrect because square could not be substituted into the process function, therby breacking the Liskov Substitution Rule" << endl;
     return 0;
 }
