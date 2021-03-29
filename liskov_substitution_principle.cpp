@@ -37,7 +37,7 @@ public:
     }
 };
 
-//Say you have a function called process that takes a reference to a rectangle and sets its width to 10.
+//Say you have a function called process that takes a reference to a rectangle and sets its height to 10.
 //You would expect then, that the area of that rectangle is its width * 10
 void process(Rectangle &r)
 {
