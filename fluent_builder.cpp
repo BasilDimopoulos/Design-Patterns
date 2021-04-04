@@ -29,6 +29,10 @@ struct HTMLElement
         oss << i << "</" << name << ">" << endl;
         return oss.str();
     }
+    static HTMLBuilder build(string root_name)
+    {
+        return {root_name};
+    }
 };
 
 struct HTMLBuilder
@@ -38,20 +42,24 @@ struct HTMLBuilder
     {
         root.name = root_name;
     }
-    void add_child(string child_name, string child_text)
+    //This is where we add the fluent builder functionality
+    HTMLBuilder &add_child(string child_name, string child_text)
     {
         HTMLElement e{child_name, child_text};
         root.elements.emplace_back(e);
+        return *this;
     }
 
     string str() { return root.str(); }
+
+    operator HTMLElement() const { return root; }
 };
 
 int main()
 {
     HTMLBuilder builder{"ul"};
-    builder.add_child("li", "hello");
-    builder.add_child("li", "world");
+    builder.add_child("li", "hello").add_child("li", "world");
     cout << builder.str() << endl;
+    auto builder = HTMLElement::build("ul").add_child("", "");
     return 0;
 }
