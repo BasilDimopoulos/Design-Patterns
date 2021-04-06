@@ -36,7 +36,7 @@ struct Relationships : RelationshipBrowser
     {
         relations.push_back({parent, Relationship::parent, child});
         relations.push_back({child, Relationship::child, parent});
-        //Remember we need to map both the parents relatinship to the child, and the childs relationship to the parent
+        //Remember we need to map both the parents relationship to the child, and the childs relationship to the parent
     }
 
     vector<Person> find_all_children_of(const string &name) override
